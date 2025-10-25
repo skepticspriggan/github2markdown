@@ -1,4 +1,4 @@
-# GitHub markdown
+# GitHub 2 Markdown
 
 Stores GitHub issues of an author in simple human readable, plain text markdown files.
 
