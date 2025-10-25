@@ -1,5 +1,5 @@
 run:
-		bash github2markdown.sh issues
+		bash github2markdown.sh skepticspriggan issues
 
 watch:
 		echo github2markdown.sh | entr bash github2markdown.sh --token "$$(pass github/token)" --username skepticspriggan
