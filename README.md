@@ -23,10 +23,19 @@ Stores GitHub issues of an author in simple human readable, plain text markdown 
 
 ## Installation
 
+Make the program executable from everywhere.
+
 ```bash
 git clone https://github.com/skepticspriggan/github2markdown.git
 cd github2markdown
 make install
+```
+
+Schedule a periodic export at 10:00 on every 7th day of the month.
+
+```bash
+crontab -l | cat - <(echo "0 10 */7 * * $HOME/.local/bin/github2markdown --username skepticspriggan --destination $HOME/repos/issues") \
+  | crontab -
 ```
 
 ## Usage
