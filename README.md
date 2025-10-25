@@ -1,6 +1,6 @@
 # GitHub 2 Markdown
 
-Stores GitHub issues of an author in simple human readable, plain text markdown files.
+Stores GitHub issues of an author in simple human readable markdown files.
 
 ## Features
 
@@ -59,3 +59,7 @@ Store many issues reliably by using a GitHub access token safely passed with [`p
 ```bash
 github2markdown --username USERNAME --token $(pass github/token)
 ```
+
+## Todo
+
+- Support pagination
