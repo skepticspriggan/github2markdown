@@ -63,3 +63,4 @@ github2markdown --username USERNAME --token $(pass github/token)
 ## Todo
 
 - Support pagination
+- Filter noise by bots
