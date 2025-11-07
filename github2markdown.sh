@@ -2,7 +2,6 @@
 
 # set -euxo pipefail
 
-
 usage() {
   cat <<EOF
 Usage: ${0##*/} [OPTIONS]
@@ -132,6 +131,11 @@ fi
 
 response=$(curl --silent --location "${headers[@]}" "$issues_url")
 
+if echo "$response" | grep -q "rate limit exceeded"; then
+  echo "GitHub API rate limit exceeded. Authenticate to increase rate limit." >&2
+  exit 1
+fi
+
 count=$(echo "$response" | jq '.items | length')
 echo "Found $count issues by $username."
 echo
@@ -142,6 +146,7 @@ echo "$response" | jq -c '.items[]' | while read -r item; do
   state=$(echo "$item" | jq -r '.state')
   html_url=$(echo "$item" | jq -r '.html_url')
   comments_url=$(echo "$item" | jq -r '.comments_url')
+  reviews_url="$(echo "$item" | jq -r '.pull_request.url')/comments"
   repo=$(echo "$item" | jq -r '.repository_url | split("/")[-1]')
   created=$(echo "$item" | jq -r '.created_at | sub("T"; " ") | sub("Z"; "")')
   body=$(echo "$item" | jq -r '.body // ""' | tr -d '\r' | sed "s/✔️/y/g" | sed "s/❌/n/g")
@@ -172,25 +177,63 @@ EOF
   echo "- $type #$number $title in $repo"
   response=$(curl --silent --location "${headers[@]}" "$comments_url")
 
-  if ! jq -e 'length > 0' <<< "$response" >/dev/null; then
-    continue
-  else
-  cat >> "$path" <<EOF
+  if echo "$response" | grep -q "rate limit exceeded"; then
+    echo "GitHub API rate limit exceeded. Authenticate to increase rate limit." >&2
+    exit 1
+  fi
+
+  if jq -e 'length > 0' <<< "$response" >/dev/null; then
+    cat >> "$path" <<EOF
 
 ## Comments
 EOF
-  fi
-
-  echo "$response" | jq -c '.[]' | while read -r comment; do
-    user=$(echo "$comment" | jq -r '.user.login')
-    created_at_iso=$(echo "$comment" | jq -r '.created_at')
-    created_at=$(date -u -d "$created_at_iso" +"%Y-%m-%d %H:%M")
-    body=$(echo "$comment" | jq -r '.body')
-    cat >> "$path" <<EOF
+    echo "$response" | jq -c '.[]' | while read -r comment; do
+      user=$(echo "$comment" | jq -r '.user.login')
+      created_at_iso=$(echo "$comment" | jq -r '.created_at')
+      created_at=$(date -u -d "$created_at_iso" +"%Y-%m-%d %H:%M")
+      body=$(echo "$comment" | jq -r '.body' | tr -d '\r' | sed 's/^/> /')
+      cat >> "$path" <<EOF
 
 $user on $created_at
 
-> $body
+$body
 EOF
-  done
+    done
+  fi
+
+  response=$(curl --silent --location "${headers[@]}" "$reviews_url")
+
+  if echo "$response" | grep -q "rate limit exceeded"; then
+    echo "GitHub API rate limit exceeded. Authenticate to increase rate limit." >&2
+    exit 1
+  fi
+
+  if jq -e 'length > 0' <<< "$response" >/dev/null; then
+    cat >> "$path" <<EOF
+
+## Reviews
+EOF
+    echo "$response" | jq -c '.[]' | while read -r review; do
+      user=$(echo "$review" | jq -r '.user.login')
+      created_at_iso=$(echo "$review" | jq -r '.created_at')
+      created_at=$(date -u -d "$created_at_iso" +"%Y-%m-%d %H:%M")
+      body=$(echo "$review" | jq -r '.body' | tr -d '\r' | sed 's/^/> /')
+      review_path=$(echo "$review" | jq -r '.path')
+      diff_hunk=$(echo "$review" | jq -r '.diff_hunk')
+      fence='```'
+      cat >> "$path" <<EOF
+
+$user on $created_at
+
+$review_path
+
+$fence
+$diff_hunk
+$fence
+
+$body
+EOF
+    done
+  fi
+
 done

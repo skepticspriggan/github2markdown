@@ -6,7 +6,7 @@ Backup all your GitHub issues in an easy so search format.
 
 - _Simple:_ Uses only basic command-line tools (`bash`, `curl`, `jq`) — lightweight and easy to inspect or tweak.
 - _Reliable:_ Supports GitHub authentication which prevents rate limiting errors.
-- _Complete:_ Saves each issue including comments in a separate file.
+- _Complete:_ Saves each issue including comments and code reviews in a separate file.
 
 ## Goals
 
