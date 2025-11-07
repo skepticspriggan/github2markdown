@@ -1,19 +1,19 @@
 # GitHub 2 Markdown
 
-Stores GitHub issues of an author in simple human readable markdown files.
+Backup all your GitHub issues in an easy so search format.
 
 ## Features
 
-- _Simple:_ Only uses basic command-line tools (`bash`, `curl`, `jq`.)
+- _Simple:_ Uses only basic command-line tools (`bash`, `curl`, `jq`) — lightweight and easy to inspect or tweak.
 - _Reliable:_ Supports GitHub authentication which prevents rate limiting errors.
-- Saves each issue including comments in a separate file.
+- _Complete:_ Saves each issue including comments in a separate file.
 
 ## Goals
 
-- _Availabilty/Data Ownership:_ Keeping issues backup offline ensures the value information therein remains available even if the repositories are no longer accessible online.
-- _Fast Search:_ Searching and viewing offline plain-text files is much faster compared to the online GitHub interface.
-- _Automation:_ Periodic exports maintain an up-to-date backup of all personal issues. It is time intensive and error prone to manually backup issues.
-- _Global Search:_ One search tool to rule them all. Storing all information locally in plain-text files allows one to search in a single place instead of in many different slow and unreliable online places.
+- _Own Your Data:_ Keep every issue backed up offline so your valuable work stays accessible — even if GitHub disappears.
+- _Search Faster:_ Blaze through plain-text files locally instead of waiting on sluggish web interfaces.
+- _Automate Exports:_ Let scripts handle backups on schedule. No more tedious and error-prone manual exports.
+- _Search Everywhere:_ Store everything locally in plain text and search it all at once — no more hunting for where to even start searching, no context switches, no wasted time and energy.
 
 ## Requirements
 
