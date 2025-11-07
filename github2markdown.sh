@@ -189,6 +189,12 @@ EOF
 EOF
     echo "$response" | jq -c '.[]' | while read -r comment; do
       user=$(echo "$comment" | jq -r '.user.login')
+
+      # Filter noise from bots
+      if [[ "$user" == *"[bot]"* ]]; then
+        continue
+      fi
+
       created_at_iso=$(echo "$comment" | jq -r '.created_at')
       created_at=$(date -u -d "$created_at_iso" +"%Y-%m-%d %H:%M")
       body=$(echo "$comment" | jq -r '.body' | tr -d '\r' | sed 's/^/> /')
