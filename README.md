@@ -63,3 +63,4 @@ github2markdown --username USERNAME --token $(pass github/token)
 ## Todo
 
 - Support pagination
+- Show review comments under the relevant review (API has no filter for review, so must be done afterwards)
